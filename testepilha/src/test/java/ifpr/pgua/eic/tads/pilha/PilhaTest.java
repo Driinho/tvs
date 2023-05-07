@@ -2,10 +2,14 @@ package ifpr.pgua.eic.tads.pilha;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import ifpr.pgua.eic.tads.pilha.exceptions.PilhaCheiaException;
+import ifpr.pgua.eic.tads.pilha.exceptions.PilhaVaziaException;
 
 public class PilhaTest {
     
@@ -24,7 +28,7 @@ public class PilhaTest {
     }
 
     @Test
-    public void empilhaUmElemento() {
+    public void empilhaUmElemento() throws PilhaCheiaException {
         // Ação
         p.empilhar("primeiro");
 
@@ -35,7 +39,7 @@ public class PilhaTest {
     }
 
     @Test
-    public void empilharDoisDesempilharUm() {
+    public void empilharDoisDesempilharUm() throws PilhaVaziaException, PilhaCheiaException {
         // Cenário
         p.empilhar("primeiro");
         p.empilhar("segundo");
@@ -52,5 +56,24 @@ public class PilhaTest {
         assertEquals(1, p.tamanho());
         assertEquals("segundo", retorno);
         assertEquals("primeiro", p.topo());
+    }
+
+    @Test
+    public void testePilhaVaziaException() {
+        // Verificação
+        assertThrows(PilhaVaziaException.class, () -> p.desempilhar());
+    }
+
+    @Test
+    public void testePilhaCheia() throws PilhaCheiaException {
+        // Cenário
+        p.empilhar("primeiro");
+        p.empilhar("segundo");
+        p.empilhar("terceiro");
+        p.empilhar("quarto");
+        p.empilhar("quinto");
+
+        // Verificação
+        assertThrows(PilhaCheiaException.class, () -> p.empilhar("sexto"));
     }
 }
